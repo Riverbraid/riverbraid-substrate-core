@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Riverbraid Light-Spine",
+  "description": "Symbolic core structure of Riverbraid’s mathematical substrate",
+  "type": "object",
+  "properties": {
+    "origin_node": {
+      "type": "string",
+      "description": "Seeded memory anchor"
+    },
+    "resonance_map": {
+      "type": "array",
+      "description": "Harmonic morphisms across the substrate",
+      "items": {
+        "type": "object",
+        "properties": {
+          "input": { "type": "string" },
+          "output": { "type": "string" },
+          "morphism": { "type": "string" }
+        },
+        "required": ["input", "output", "morphism"]
+      }
+    },
+    "invariants": {
+      "type": "object",
+      "properties": {
+        "M_to_R": { "type": "number" },
+        "R_to_K": { "type": "number" },
+        "K_to_T": { "type": "number" },
+        "T_to_L": { "type": "number" }
+      },
+      "description": "Eigenstate coherence metrics"
+    }
+  },
+  "required": ["origin_node", "resonance_map"]
+}
