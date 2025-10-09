@@ -1,9 +1,3 @@
-Absolutely.
-Here’s a clean, ready-to-paste README.md version — formatted exactly for GitHub readability (markdown-safe, consistent headers, code snippets, and tables).
-
-⸻
-
-
 # 🌐 Substrate Licensing Framework (SLF)
 *A blueprint for ethical, composable cognition modules in next-generation AI.*
 
