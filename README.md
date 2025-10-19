@@ -36,3 +36,16 @@ npx riverbraid list
 
 # run tests
 npm test
+---
+
+### 🧭 Riverbraid System Status
+
+| Metric | Badge |
+|:--|:--|
+| Ledger Verification | [![Verify Riverbraid Ledger Seal](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/verify-ledger.yml/badge.svg)](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/verify-ledger.yml) |
+| Schema Version | ![Schema Version](https://img.shields.io/badge/schema-vNext-blue?style=flat-square) |
+| Build | ![Build](https://img.shields.io/github/actions/workflow/status/Riverbraid/riverbraid-substrate-core/verify-ledger.yml?style=flat-square) |
+| License | ![License](https://img.shields.io/github/license/Riverbraid/riverbraid-substrate-core?style=flat-square) |
+| Integrity Hash | ![Integrity](https://img.shields.io/badge/checksum-auto--verified-green?style=flat-square) |
+
+*Riverbraid Core Schema vNext — Relational Governance • Curvature Regulation • HCMA Harmonics*
