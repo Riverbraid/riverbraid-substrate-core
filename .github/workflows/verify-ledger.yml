@@ -1,0 +1,51 @@
+name: Verify Riverbraid Ledger Seal
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  verify-ledger:
+    name: Run Ledger Integrity Seal
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Emit verification seal
+        env:
+          MASTER_KEY: ${{ secrets.MASTER_KEY }}
+        run: node scripts/emit-seal.mjs
+
+      - name: Display ledger diff
+        run: git diff --color=always riverbraid_ledger.json || true
+
+      - name: Commit updated seal (if changed)
+        run: |
+          if [[ `git status --porcelain riverbraid_ledger.json` ]]; then
+            git config user.name "Riverbraid-Bot"
+            git config user.email "bot@riverbraid.io"
+            git add riverbraid_ledger.json
+            git commit -m "chore(ledger): auto-update verification seal"
+            git push
+          else
+            echo "No ledger changes detected."
+          fi
+
+      - name: Upload ledger artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-ledger
+          path: riverbraid_ledger.json
