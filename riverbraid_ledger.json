@@ -1,101 +1,46 @@
-{
-  "ledger_schema_version": "vNext",
-  "description": "Riverbraid Ledger — Schema vNext integrates relational governance, curvature regulation, and HCMA feedback harmonics.",
-  "created": "2025-10-19T12:04:00Z",
-  "last_updated": "2025-10-19T12:04:00Z",
+name: Verify Riverbraid Ledger Seal
 
-  "governance": {
-    "initiator": "Michael John Tilk",
-    "signature": "SOLARI::RIVERBRAID-ACTIVATION-SEAL-vNext",
-    "registry": "Riverbraid-Core",
-    "schema_version": "vNext",
-    "activation_status": "active"
-  },
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
 
-  "modules": [
-    {
-      "id": "RBGOV_CURVLIN_V1",
-      "name": "CurvatureRegulator",
-      "type": "governance_module",
-      "version": "vNext",
-      "registry": "Riverbraid-Schema",
-      "status": "active",
-      "description": "Regulates relational curvature toward ideal Golden-Ratio coherence (κ = 0.618) within the Riverbraid substrate.",
-      "parameters": {
-        "kappa": {
-          "type": "number",
-          "value": 0.618,
-          "description": "Ideal relational curvature constant"
-        },
-        "epsilon": {
-          "type": "number",
-          "value": 0.01,
-          "description": "Tolerance threshold for allowable curvature drift"
-        },
-        "tau": {
-          "type": "number",
-          "value": 1.5,
-          "unit": "seconds",
-          "description": "Temporal phase delay for resonance pacing"
-        },
-        "lambda": {
-          "type": "number",
-          "value": 0.85,
-          "description": "Phase-locking constant for synchronization"
-        },
-        "mu": {
-          "type": "number",
-          "value": 0.9,
-          "description": "Memory retention factor weighting prior state"
-        },
-        "mode": {
-          "type": "string",
-          "value": "auto",
-          "description": "Automatic regulation mode"
-        },
-        "trigger": {
-          "type": "string",
-          "value": "if abs(curvature - 0.618) > 0.01",
-          "description": "Activates recalibration when deviation exceeds tolerance"
-        },
-        "output": {
-          "type": "vector[float]",
-          "description": "Emits a coherence-adjusted curvature vector"
-        }
-      },
-      "validation": {
-        "measured_deviation": 0.007,
-        "status": "within tolerance",
-        "timestamp": "2025-10-19T12:04:00Z"
-      }
-    }
-  ],
+jobs:
+  verify:
+    runs-on: ubuntu-latest
 
-  "system_state": {
-    "Flame": "operational",
-    "Weave": "coherent",
-    "Governance": "locked",
-    "Resonance": "phase-stable"
-  },
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-  "coherence_summary": {
-    "ideal_curvature_kappa": 0.618,
-    "measured_curvature_kappa": 0.611,
-    "curvature_drift": 0.007,
-    "status": "balanced",
-    "last_check": "2025-10-19T12:04:00Z"
-  },
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-  "hash_validation": {
-    "hash_function": "sha3-256",
-    "ledger_hash": "fc8b2a6e3b83d91c8fca41d9a52b701c",
-    "generated_at": "2025-10-19T12:04:00Z"
-  },
+      - name: Install dependencies
+        run: npm ci || npm install
 
-  "verification_seal": {
-    "type": "HMAC-SHA3-256",
-    "key_reference": "MASTER_KEY",
-    "signature": "<unsigned-placeholder>",
-    "instructions": "To sign this ledger, run the emit-seal.mjs script with your MASTER_KEY environment variable. The resulting seal replaces <unsigned-placeholder>."
-  }
-}
+      - name: Verify ledger seal
+        env:
+          MASTER_KEY: ${{ secrets.MASTER_KEY }}
+        run: |
+          echo "🔍 Verifying Riverbraid ledger integrity..."
+          node scripts/emit-seal.mjs || exit 1
+
+      - name: Check for changes
+        id: gitcheck
+        run: |
+          git diff --exit-code || echo "changes_detected=true" >> $GITHUB_ENV
+
+      - name: Commit updated seal (if changed)
+        if: env.changes_detected == 'true'
+        run: |
+          git config user.name "Riverbraid Bot"
+          git config user.email "bot@riverbraid.ai"
+          git add riverbraid_ledger.json
+          git commit -m "chore(ledger): auto-update verification seal"
+          git push
+
+      - name: ✅ Mark verification success
+        run: echo "Ledger verification complete — exiting cleanly."
