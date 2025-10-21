@@ -4,6 +4,7 @@
 > Riverbraid is a living, mathematically-coherent AI substrate — the foundational orchestration layer for Resonant Intelligence.
 
 [![CI](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml/badge.svg)](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml)
+[[![CI](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml/badge.svg)](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml)
 [![Nightly Integration](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/nightly.yml/badge.svg)](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/nightly.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
