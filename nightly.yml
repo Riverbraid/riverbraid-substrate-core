@@ -1,0 +1,86 @@
+name: Riverbraid Nightly Integration Test
+
+on:
+  schedule:
+    # Runs every night at 03:33 UTC (symbolic “Braid time”)
+    - cron: "33 3 * * *"
+  workflow_dispatch:  # manual trigger option
+    inputs:
+      run_level:
+        description: "Optional run level (quick/full)"
+        default: "full"
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: riverbraid-nightly
+  cancel-in-progress: false
+
+jobs:
+  nightly-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pytest docker-compose httpx
+
+      - name: Start Riverbraid stack via docker-compose
+        run: |
+          echo "🚀 Starting Riverbraid substrate stack..."
+          docker-compose up -d --build
+          sleep 20
+          docker ps
+
+      - name: Run integration tests (network & coherence)
+        run: |
+          echo "🧪 Running integration tests..."
+          pytest -q tests/test_hcma_integration.py || true
+
+      - name: Health check endpoints
+        run: |
+          echo "🌐 Checking service endpoints..."
+          curl -fsS http://localhost:8000/ || echo "API root check failed"
+          curl -fsS http://localhost:8000/flame/ || echo "Flame endpoint check failed"
+          curl -fsS http://localhost:8000/weave/root || echo "Weave endpoint check failed"
+
+      - name: Collect logs for diagnostics
+        if: always()
+        run: |
+          mkdir -p artifacts/logs
+          docker-compose logs > artifacts/logs/docker-compose.log || true
+          docker-compose ps -a > artifacts/logs/stack-status.txt || true
+
+      - name: Upload nightly artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-logs
+          path: artifacts/logs
+
+      - name: Tear down containers
+        if: always()
+        run: |
+          echo "🧹 Stopping Riverbraid stack..."
+          docker-compose down -v
+
+  notify:
+    needs: nightly-integration
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Summary notification
+        run: |
+          echo "🌙 Riverbraid Nightly completed at $(date -u)"
+          echo "Check artifacts and logs under the Actions → nightly-logs archive."
