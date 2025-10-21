@@ -1,6 +1,6 @@
 # riverbraid-substrate-core
 Riverbraid is a living, mathematically-coherent AI substrate
-
+[![Build Status](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml/badge.svg)](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml)
 ## Quickstart
 
 ```bash
