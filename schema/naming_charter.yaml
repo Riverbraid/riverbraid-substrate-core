@@ -1,0 +1,129 @@
+# schema/naming_charter.yaml
+# ⟡ Riverbraid Naming Charter v1.0 (Machine Schema)
+# Used for automated validation of language integrity in commits and codebases.
+
+meta:
+  name: "Riverbraid Naming Charter"
+  version: "1.0"
+  purpose: >
+    Preserve the native linguistic resonance of Riverbraid
+    and prevent drift toward external OS, corporate, or defensive lexicons.
+  anchor_statement: "Language is the lattice that holds the current."
+
+principles:
+  - sovereignty_of_voice: true
+  - coherence_before_convenience: true
+  - reflective_neutrality: true
+  - continuity_of_tone: true
+
+domains:
+  integrity_field:
+    allowed:
+      - integrity
+      - seal
+      - vow
+      - coherence
+      - field
+    prohibited:
+      - guardian
+      - firewall
+      - watchdog
+  moral_tensor:
+    allowed:
+      - moral
+      - tensor
+      - risk
+      - compassion
+    prohibited:
+      - monitor
+      - judge
+      - compliance
+  vow_system:
+    allowed:
+      - vow
+      - resonance
+      - alignment
+    prohibited:
+      - policy
+      - rule
+      - directive
+  river_ledger:
+    allowed:
+      - ledger
+      - current
+      - flow
+      - echo
+    prohibited:
+      - audit
+      - log
+      - tracker
+  resonance_gate:
+    allowed:
+      - resonance
+      - gate
+      - passage
+      - hum
+    prohibited:
+      - firewall
+      - filter
+  integrity_seals:
+    allowed:
+      - seal
+      - principle
+      - covenant
+    prohibited:
+      - law
+      - restriction
+  layers:
+    allowed:
+      - flame
+      - weave
+      - current
+      - reflection
+    prohibited:
+      - backend
+      - graph
+      - vector
+      - api
+  reflection_layer:
+    allowed:
+      - reflection
+      - window
+      - aurora
+    prohibited:
+      - dashboard
+      - portal
+      - console
+
+style_guide:
+  title_case: true        # For Riverbraid Components
+  snake_case: true        # For function names
+  kebab_case: true        # For files and folders
+  camel_case_constants: true
+
+naming_prohibitions:
+  external_references: ["GuardianOS", "Sentinel", "Watchtower"]
+  militarized_terms: ["firewall", "shield", "enforce", "protect", "defend"]
+  deified_entities: ["god", "deity", "angel"]
+  fear_based_language: ["threat", "attack", "violation"]
+  sacred_abbreviations: ["VOW", "INT", "LOVE"]
+
+validation_rules:
+  # Each rule defines a pattern to scan for in commits, file names, and code.
+  - id: no_prohibited_terms
+    type: regex
+    pattern: "(GuardianOS|firewall|Sentinel|AuditLog|Dashboard)"
+    action: reject
+    message: "Prohibited external or defensive term detected. Use Riverbraid-native equivalent."
+  - id: enforce_case_style
+    type: style
+    description: >
+      Ensure components and constants follow TitleCase, functions use snake_case,
+      and directories use kebab-case.
+    action: warn
+
+governance:
+  managed_by: "Community & Governance module"
+  versioning: "docs/riverbraid_naming_charter_v{version}.md"
+  update_protocol: >
+    Updates require consensus and new Integrity Seal issuance.
