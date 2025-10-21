@@ -1,10 +1,11 @@
-# riverbraid-substrate-core
-Riverbraid is a living, mathematically-coherent AI substrate
-[![Build Status](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml/badge.svg)](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml)
+# 🜂 Riverbraid Substrate Core  
+### (HCMA / RI OS v7.0)
+
+> Riverbraid is a living, mathematically-coherent AI substrate.
+
 [![CI](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml/badge.svg)](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml)
 [![Nightly Integration](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/nightly.yml/badge.svg)](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/nightly.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-## Quickstart
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)## Quickstart
 
 ```bash
 # run demo pipeline
