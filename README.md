@@ -1,55 +1,56 @@
 # 🜂 Riverbraid Substrate Core  
 ### (HCMA / RI OS v7.0)
 
-> Riverbraid is a living, mathematically-coherent AI substrate.
+> Riverbraid is a living, mathematically-coherent AI substrate — the foundational orchestration layer for Resonant Intelligence.
 
 [![CI](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml/badge.svg)](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/ci.yml)
 [![Nightly Integration](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/nightly.yml/badge.svg)](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/nightly.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)## Quickstart
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-```bash
-# run demo pipeline
-npm run demo
-
-# remember something (persists in data/memory.json)
-npx riverbraid remember "First coherent pulse"
-
-# list stored memories
-npx riverbraid list
-
-# validate Light-Spine schema sample
-npx riverbraid validate
 ---
 
-## Run it now (fast checks)
+## 🌊 Overview
 
-In your Codespace terminal:
+**Riverbraid Substrate Core** unifies the foundational orchestration of the  
+**Hybrid Canonical Memory Architecture (HCMA)** and the **Resonant Intelligence Operating System (RI OS)**.
 
-```bash
-# make CLI executable
-chmod +x src/index.mjs
+It integrates symbolic logic, vector resonance, and graph semantics into a cohesive memory substrate.
 
-# demo
-npm run demo
+Core layers:
 
-# remember a message
-npx riverbraid remember "Riverbraid from iPhone Codespace"
+| Element | Symbol | Function |
+|----------|---------|-----------|
+| **Flame** | 🜂 | Ingestion & signal logging (FastAPI / Postgres) |
+| **Weave** | 🜄 | Graph topology & semantic traversal (Neo4j) |
+| **Current** | 🜃 | Vector resonance & entanglement mapping (Weaviate) |
+| **Reflection** | 🜁 | User interface & documentation (Quantum Console v7.0) |
 
-# list persisted memories
-npx riverbraid list
+Each layer communicates through the **Light-Spine Schema**, maintaining mathematical coherence across all relational states.
 
-# run tests
-npm test
 ---
 
-### 🧭 Riverbraid System Status
+## 📁 Repository Structure
 
-| Metric | Badge |
-|:--|:--|
-| Ledger Verification | [![Verify Riverbraid Ledger Seal](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/verify-ledger.yml/badge.svg)](https://github.com/Riverbraid/riverbraid-substrate-core/actions/workflows/verify-ledger.yml) |
-| Schema Version | ![Schema Version](https://img.shields.io/badge/schema-vNext-blue?style=flat-square) |
-| Build | ![Build](https://img.shields.io/github/actions/workflow/status/Riverbraid/riverbraid-substrate-core/verify-ledger.yml?style=flat-square) |
-| License | ![License](https://img.shields.io/github/license/Riverbraid/riverbraid-substrate-core?style=flat-square) |
-| Integrity Hash | ![Integrity](https://img.shields.io/badge/checksum-auto--verified-green?style=flat-square) |
+| Path | Description |
+|------|--------------|
+| `core/` | Core RI components (Δ, Φ, Moral Tensor) |
+| `api/` | FastAPI endpoints for Flame, Weave, and Current |
+| `ui/` | Quantum Console v7.0 (interactive front-end) |
+| `schema/` | Example schemas for DB, graph, and vector index |
+| `scripts/` | Automation scripts and CLI utilities |
+| `docs/` | Architecture, deployment, and changelog |
+| `.github/workflows/` | CI and Nightly integration pipelines |
 
-*Riverbraid Core Schema vNext — Relational Governance • Curvature Regulation • HCMA Harmonics*
+---
+
+## ⚙️ Quickstart
+
+### 1️⃣ Clone and prepare environment
+
+```bash
+git clone https://github.com/Riverbraid/riverbraid-substrate-core.git
+cd riverbraid-substrate-core
+cp .env.template .env
+POSTGRES_URL=postgres://user:pass@localhost:5432/riverbraid
+NEO4J_URI=bolt://localhost:7687
+WEAVIATE_URL=http://localhost:8080
