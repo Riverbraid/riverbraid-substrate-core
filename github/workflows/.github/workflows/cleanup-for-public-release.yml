@@ -1,7 +1,7 @@
 name: Public-Release Cleanup
 
 on:
-  workflow_dispatch:   # manual trigger
+  workflow_dispatch:
   push:
     branches: [ main ]
 
@@ -9,61 +9,50 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     permissions:
-      contents: write        # allows push back to the repo
+      contents: write
 
     steps:
-      - name: Checkout repository (full history)
+      - name: Checkout (full history)
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: false   # ← THIS IS THE MISSING LINE
 
-      - name: Remove junk / temporary files
+      - name: Delete junk files + merge docs
         run: |
           git config user.name "cleanup-bot"
           git config user.email "cleanup@riverbraid.ai"
 
+          # 1. delete everything we agreed on
           git rm -f --ignore-unmatch \
-            .nvimrc \
-            COPILOT.md \
-            FOUNDRY_TARGET.md \
-            lock.json \
-            nightly.yml \
-            pipeline.test.mjs \
-            riverbraid_ledger.json \
-            "terminal:" || true
+            .nvimrc COPILOT.md FOUNDRY_TARGET.md lock.json nightly.yml \
+            pipeline.test.mjs riverbraid_ledger.json "terminal:" || true
 
-          if ! git diff --staged --quiet; then
-            git commit -m "chore: remove dev artifacts and temporary files"
-          else
-            echo "No junk files found – nothing to delete"
-          fi
-
-      - name: Merge Licensing_README.md into README.md
-        run: |
+          # 2. merge Licensing_README.md into README.md
           if [ -f Licensing_README.md ]; then
             echo -e "\n## Licensing\n" >> README.md
             cat Licensing_README.md >> README.md
-            echo -e "\n---\n*Full license in [LICENSE](./LICENSE)*\n" >> README.md
+            echo -e "\n---\nFull license in [LICENSE](./LICENSE)\n" >> README.md
             git rm Licensing_README.md
             git add README.md
-            git commit -m "docs: merge Licensing_README.md into main README"
-          else
-            echo "Licensing_README.md not present – skipping"
           fi
 
-      - name: Fold COPILOT.md into CONTRIBUTING.md
-        run: |
+          # 3. merge COPILOT.md into CONTRIBUTING.md
           if [ -f COPILOT.md ] && [ -f CONTRIBUTING.md ]; then
             echo -e "\n## Using GitHub Copilot\n" >> CONTRIBUTING.md
             cat COPILOT.md >> CONTRIBUTING.md
             git rm COPILOT.md
             git add CONTRIBUTING.md
-            git commit -m "docs: move Copilot notes into CONTRIBUTING.md"
-          else
-            echo "COPILOT.md not present – skipping"
           fi
 
-      - name: Push all changes
-        run: |
-          git push origin main || echo "No changes to push"
+          # commit everything that changed
+          if ! git diff --staged --quiet; then
+            git commit -m "chore(docs): final public-release cleanup – remove junk + merge docs"
+          else
+            echo "Nothing to do – repo already clean"
+            exit 0
+          fi
+
+      - name: Push changes
+        run: git push origin main
