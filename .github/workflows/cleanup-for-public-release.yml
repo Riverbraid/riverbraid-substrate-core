@@ -35,3 +35,18 @@ jobs:
 
           if ! git diff --staged --quiet; then
             git commit -m "chore: remove dev artifacts and temporary files"
+          git config user.name "cleanup-bot"
+          git config user.email "cleanup@riverbraid.ai"
+
+          git rm -f --ignore-unmatch \
+            .nvimrc \
+            COPILOT.md \
+            FOUNDRY_TARGET.md \
+            lock.json \
+            nightly.yml \
+            pipeline.test.mjs \
+            riverbraid_ledger.json \
+            "terminal:" || true
+
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: remove dev artifacts and temporary files"
