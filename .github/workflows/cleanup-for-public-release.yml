@@ -9,14 +9,14 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     permissions:
-      contents: write         # explicitly allow push back to the repo
+      contents: write           # needed to push back to main
 
     steps:
       - name: Checkout repository (full history)
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0        # ← critical fix
+          fetch-depth: 0          # critical for committing + pushing
 
       - name: Remove dev / temporary files
         run: |
@@ -35,13 +35,3 @@ jobs:
 
           if ! git diff --staged --quiet; then
             git commit -m "chore: remove dev artifacts and temporary files"
-          else
-            echo "No junk files to delete"
-          fi
-
-      - name: Merge Licensing_README.md → README.md
-        run: |
-          if [ -f Licensing_README.md ]; then
-            echo -e "\n## Licensing\n" >> README.md
-            cat Licensing_README.md >> README.md
-            echo -e "\n---\n*Full license in [LICENSE](./LICENSE)*\
