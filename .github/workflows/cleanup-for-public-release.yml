@@ -1,26 +1,28 @@
 name: Public-Release Cleanup
 
 on:
-  workflow_dispatch:      # Lets you run it manually any time
+  workflow_dispatch:   # manual trigger
   push:
     branches: [ main ]
 
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write         # explicitly allow push back to the repo
+
     steps:
-      - name: Checkout repository
+      - name: Checkout repository (full history)
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0        # ← critical fix
 
-      # ----- 1. Delete all the junk files we agreed on -----
-      - name: Remove dev-only / temporary files
+      - name: Remove dev / temporary files
         run: |
           git config user.name "cleanup-bot"
-          git config user.email "cleanup@riverbraid"
+          git config user.email "cleanup@riverbraid.ai"
 
-          # These are 100% safe to delete
           git rm -f --ignore-unmatch \
             .nvimrc \
             COPILOT.md \
@@ -29,33 +31,17 @@ jobs:
             nightly.yml \
             pipeline.test.mjs \
             riverbraid_ledger.json \
-            terminal: || true
+            "terminal:" || true
 
-          git commit -m "chore: remove dev artifacts and clutter" || echo "Nothing to delete"
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: remove dev artifacts and temporary files"
+          else
+            echo "No junk files to delete"
+          fi
 
-      # ----- 2. Combine Licensing_README.md into main README -----
       - name: Merge Licensing_README.md → README.md
         run: |
           if [ -f Licensing_README.md ]; then
             echo -e "\n## Licensing\n" >> README.md
             cat Licensing_README.md >> README.md
-            echo -e "\n---\n*See also the full [LICENSE](./LICENSE) file.*" >> README.md
-            git rm Licensing_README.md
-            git add README.md
-            git commit -m "docs: merge Licensing_README.md into main README"
-          fi
-
-      # ----- 3. (Optional) If you still want COPILOT notes inside CONTRIBUTING -----
-      - name: Fold COPILOT.md into CONTRIBUTING.md (if it exists)
-        run: |
-          if [ -f COPILOT.md ] && [ -f CONTRIBUTING.md ]; then
-            echo -e "\n## Using GitHub Copilot\n" >> CONTRIBUTING.md
-            cat COPILOT.md >> CONTRIBUTING.md
-            git rm COPILOT.md
-            git commit -m "docs: move Copilot notes into CONTRIBUTING.md"
-          fi
-
-      # ----- 4. Push all changes back to main -----
-      - name: Push cleanup
-        run: |
-          git push origin main || echo "No changes to push"
+            echo -e "\n---\n*Full license in [LICENSE](./LICENSE)*\
