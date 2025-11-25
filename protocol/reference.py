@@ -1,3 +1,4 @@
+# protocol/reference.py
 # Riverbraid v1.0 – Sovereign Recognition Protocol
 # Minimal reference implementation – zero external deps beyond numpy
 
