@@ -9,16 +9,16 @@ jobs:
   cleanup:
     runs-on: ubuntu-latest
     permissions:
-      contents: write           # needed to push back to main
+      contents: write        # allows push back to the repo
 
     steps:
       - name: Checkout repository (full history)
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0          # critical for committing + pushing
+          fetch-depth: 0
 
-      - name: Remove dev / temporary files
+      - name: Remove junk / temporary files
         run: |
           git config user.name "cleanup-bot"
           git config user.email "cleanup@riverbraid.ai"
@@ -35,18 +35,6 @@ jobs:
 
           if ! git diff --staged --quiet; then
             git commit -m "chore: remove dev artifacts and temporary files"
-          git config user.name "cleanup-bot"
-          git config user.email "cleanup@riverbraid.ai"
-
-          git rm -f --ignore-unmatch \
-            .nvimrc \
-            COPILOT.md \
-            FOUNDRY_TARGET.md \
-            lock.json \
-            nightly.yml \
-            pipeline.test.mjs \
-            riverbraid_ledger.json \
-            "terminal:" || true
-
-          if ! git diff --staged --quiet; then
-            git commit -m "chore: remove dev artifacts and temporary files"
+          else
+            echo "No junk files found – nothing to delete"
+          fi
