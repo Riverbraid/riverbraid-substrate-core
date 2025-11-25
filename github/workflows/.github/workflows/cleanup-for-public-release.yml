@@ -1,0 +1,68 @@
+name: Public-Release Cleanup
+
+on:
+  workflow_dispatch:  # Manual trigger
+  push:
+    branches: [ main ]  # Change to [ master ] if your default branch is master
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Ensures push perms
+          fetch-depth: 0
+
+      - name: Remove dev-only / temporary files
+        run: |
+          git config user.name "cleanup-bot"
+          git config user.email "cleanup@riverbraid.ai"
+          # Safe deletes - ignores if missing
+          files_to_delete=(.nvimrc COPILOT.md FOUNDRY_TARGET.md lock.json nightly.yml pipeline.test.mjs riverbraid_ledger.json "terminal:")
+          for file in "${files_to_delete[@]}"; do
+            git rm -f --ignore-unmatch "$file" || true
+          done
+          if git diff --staged --quiet; then
+            echo "No files to delete"
+          else
+            git commit -m "chore: remove dev artifacts and clutter"
+          fi
+
+      - name: Merge Licensing_README.md → README.md
+        run: |
+          if [ -f Licensing_README.md ] && [ -f README.md ]; then
+            { echo -e "\n## Licensing Details\n"; cat Licensing_README.md; echo -e "\n---\n*Full license in [LICENSE](./LICENSE).*"; } >> README.md
+            git rm Licensing_README.md
+            git add README.md
+            git commit -m "docs: merge Licensing_README.md into README.md"
+          else
+            echo "Skipping merge - files missing"
+          fi
+
+      - name: Fold COPILOT.md into CONTRIBUTING.md
+        run: |
+          if [ -f COPILOT.md ] && [ -f CONTRIBUTING.md ]; then
+            { echo -e "\n## AI-Assisted Contributions (Copilot)\n"; cat COPILOT.md; } >> CONTRIBUTING.md
+            git rm COPILOT.md
+            git add CONTRIBUTING.md
+            git commit -m "docs: integrate Copilot notes into CONTRIBUTING.md"
+          else
+            echo "Skipping Copilot merge - files missing"
+          fi
+
+      - name: Merge diagrams into substrate-overview.md
+        run: |
+          if [ -f diagrams ] && [ -f substrate-overview.md ]; then  # Assuming 'diagrams' is a file; adjust if dir
+            { echo -e "\n## Diagrams\n"; cat diagrams; } >> substrate-overview.md
+            git rm diagrams
+            git add substrate-overview.md
+            git commit -m "docs: embed diagrams in substrate-overview.md"
+          else
+            echo "Skipping diagrams merge"
+          fi
+
+      - name: Push changes
+        run: |
+          git push origin main  # Change to master if needed
